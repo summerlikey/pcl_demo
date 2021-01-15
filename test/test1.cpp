@@ -57,7 +57,8 @@ int main(int argc, char** argv)
     pcl::PointCloud<PoinTNormal>::Ptr cloud_with_normals(new pcl::PointCloud<PoinTNormal>);
     pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);//连接字段，cloud_with_normals存储有向点云
     std::cerr << "法线计算   完成" << std::endl;
-
+    end = clock();//结束时间
+    cout<<"法线计算  完成 time = "<<double(end-start)/CLOCKS_PER_SEC<<"s"<<endl;  //输出时间（单位：ｓ）
     //创建搜索树
     pcl::search::KdTree<PoinTNormal>::Ptr tree2(new pcl::search::KdTree<PoinTNormal>);
     tree2->setInputCloud(cloud_with_normals);
@@ -68,13 +69,13 @@ int main(int argc, char** argv)
     mls.setInputCloud(cloud_with_normals);//设置参数
     mls.setPolynomialFit(true);
     mls.setSearchMethod(tree2);
-    mls.setSearchRadius(5);
+    mls.setSearchRadius(5);//影响计算时间，值越大，耗时越久
     pcl::PointCloud<PoinTNormal>::Ptr cloud_with_normals_msl(new pcl::PointCloud<PoinTNormal>);
     mls.process(*cloud_with_normals_msl);
     cloud_with_normals = cloud_with_normals_msl;
-    std::cerr << "法线最小二  完成" << std::endl;
+    std::cerr << "法线最小二乘法  完成" << std::endl;
     end = clock();//结束时间
-    cout<<"法线最小二  完成 time = "<<double(end-start)/CLOCKS_PER_SEC<<"s"<<endl;  //输出时间（单位：ｓ）
+    cout<<"法线最小二乘法  完成 time = "<<double(end-start)/CLOCKS_PER_SEC<<"s"<<endl;  //输出时间（单位：ｓ）
     // 开始表面重建 ********************************************************************
 
     //创建Poisson对象，并设置参数
