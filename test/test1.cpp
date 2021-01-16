@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 {
     clock_t start,end;//定义clock_t变量
     start = clock();//开始时间
-    string name = "/home/ganggang/Pictures/images0107/O/o_12/test.ply";
+    string name = "/home/ganggang/Pictures/images0107/O/o_12/fadongji.ply";
     pcl::PointCloud<PoinT>::Ptr cloud(new pcl::PointCloud<PoinT>());
     // 加载pcd文件
     pcl::io::loadPLYFile(name, *cloud);
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     mls.setInputCloud(cloud_with_normals);//设置参数
     mls.setPolynomialFit(true);
     mls.setSearchMethod(tree2);
-    mls.setSearchRadius(5);//影响计算时间，值越大，耗时越久
+    mls.setSearchRadius(4);//影响计算时间，值越大，耗时越久
     pcl::PointCloud<PoinTNormal>::Ptr cloud_with_normals_msl(new pcl::PointCloud<PoinTNormal>);
     mls.process(*cloud_with_normals_msl);
     cloud_with_normals = cloud_with_normals_msl;
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
     std::vector<int> parts = gp3.getPartIDs();
     std::vector<int> states = gp3.getPointStates();
     // 保存mesh文件
-    pcl::io::saveVTKFile(name + "-quick.ply", mesh);
+    pcl::io::savePLYFile(name + "-quick.ply", mesh);
     std::cerr << "快速三角化 完成" << std::endl;
 
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     // //执行重构，结果保存在mesh中
     // mc->reconstruct(mesh);
     // //保存网格图
-    // pcl::io::saveVTKFile(name + "-cubes.ply", mesh);
+    // pcl::io::savePLYFile(name + "-cubes.ply", mesh);
     // std::cerr << "移动立方体 完成" << std::endl;
 
 

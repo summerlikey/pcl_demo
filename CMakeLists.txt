@@ -12,10 +12,12 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 find_package(OpenCV REQUIRED)
 find_package(PCL REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 set(THIRD_INCLUDE_DIRS
 		${OpenCV_INCLUDE_DIRS}
-        ${PCL_INCLUDE_DIRS}
+		${PCL_INCLUDE_DIRS}
+		${Eigen3_INCLUDE_DIRS}
 		)
 set(THIRD_PARTY_LIBS
 		pthread
