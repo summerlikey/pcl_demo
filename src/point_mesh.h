@@ -23,17 +23,30 @@
 #include <pcl/surface/marching_cubes_hoppe.h>// 移动立方体算法
 #include <pcl/surface/marching_cubes_rbf.h>
 
+#include <opencv2/opencv.hpp>
+
 typedef pcl::PointXYZ PoinT;
 typedef pcl::PointNormal PoinTNormal;
 
-class MeshPoint{
+void viewerFunction(pcl::PointCloud<pcl::PointXYZ>::Ptr v1_cloud,
+                    std::string viewer_name);
+
+void viewerFunction(pcl::PointCloud<pcl::PointXYZ>::Ptr v1_cloud,
+                    pcl::PointCloud<pcl::PointXYZ>::Ptr v2_cloud,
+                    std::string viewer_name);
+
+class PointMesh{
 public:
 
-    MeshPoint();
-    ~MeshPoint();
+    PointMesh();
+    ~PointMesh();
+    void readPointFile(std::string path);
+    void cvMatToPointCloud(cv::Mat &src);
+    pcl::PointCloud<PoinT>::Ptr getCloud();
+
 
 private:
-
+    pcl::PointCloud<PoinT>::Ptr _cloud;//origin pointcloud
 
 };
 

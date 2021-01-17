@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     clock_t start,end;//定义clock_t变量
     start = clock();//开始时间
     string name = "/home/ganggang/Pictures/images0107/O/o_12/fadongji.ply";
-    pcl::PointCloud<PoinT>::Ptr cloud(new pcl::PointCloud<PoinT>());
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>(new pcl::PointCloud<pcl::PointXYZ>);
     // 加载pcd文件
     pcl::io::loadPLYFile(name, *cloud);
     std::cerr << "Cloud before filtering: " << std::endl;

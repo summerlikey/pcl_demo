@@ -1,6 +1,6 @@
-set(TEST_SOURCES test1 test2 test3)
+set(TEST_SOURCES test1 test2 test3 unphase_test)
 FOREACH(test_src ${TEST_SOURCES})
     ADD_EXECUTABLE(${test_src} ${test_src}.cpp)
-    target_link_libraries(${test_src}  ${INTERNAL_LIBS} ${THIRD_PARTY_LIBS} pcl_demo_lib)
+    target_link_libraries(${test_src} pcl_demo_lib ${INTERNAL_LIBS} ${THIRD_PARTY_LIBS} )
     ADD_TEST(${test_src} ${test_src} ${test_src})
 ENDFOREACH(test_src)
