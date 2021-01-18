@@ -43,7 +43,24 @@ int main(int argc, char** argv)
     //     cloud->points[nIndex].y *= 100;
     //     cloud->points[nIndex].z *= 100;
     // }
+    //点云离群滤波
+    // Create the filtering object
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered = boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+	sor.setInputCloud(cloud);
+	sor.setMeanK(50);
+	sor.setStddevMulThresh(1.0);
+	sor.filter(*cloud_filtered);
+	cout << "there are " << cloud_filtered->points.size() << " points after filtering." << endl;
+    cloud = cloud_filtered;
 
+    //体素滤波
+    pcl::VoxelGrid<pcl::PointXYZ> sorvg;
+    sorvg.setInputCloud(cloud);
+    sorvg.setLeafSize (0.01f, 0.01f, 0.01f);// 单位：m
+    sorvg.filter (*cloud_filtered);
+	cout << "there are " << cloud_filtered->points.size() << " points after filtering." << endl;
+    cloud = cloud_filtered;
     // 计算法向量
     pcl::NormalEstimation<PoinT, pcl::Normal> n;//法线估计对象
     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);//存储估计的法线

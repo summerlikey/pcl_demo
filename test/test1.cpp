@@ -14,6 +14,8 @@
 #include <pcl/point_types.h> //PCL对各种格式的点的支持头文件
 #include <pcl/search/kdtree.h>//kdtree搜索对象的类定义的头文件
 #include <pcl/features/normal_3d.h>//法向量特征估计相关类定义的头文件
+
+
 //重构
 #include <pcl/surface/gp3.h>
 #include <pcl/surface/poisson.h>
@@ -43,6 +45,23 @@ int main(int argc, char** argv)
     //     cloud->points[nIndex].y *= 100;
     //     cloud->points[nIndex].z *= 100;
     // }
+    //体素滤波
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered = boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::VoxelGrid<pcl::PointXYZ> sorvg;
+    sorvg.setInputCloud(cloud);
+    sorvg.setLeafSize (0.01f, 0.01f, 0.01f);// 单位：mm
+    sorvg.filter (*cloud_filtered);
+	cout << "there are " << cloud_filtered->points.size() << " points after filtering." << endl;
+    cloud = cloud_filtered;
+    //点云离群滤波
+    // Create the filtering object
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+	sor.setInputCloud(cloud);
+	sor.setMeanK(50);
+	sor.setStddevMulThresh(1.0);
+	sor.filter(*cloud_filtered);
+	cout << "there are " << cloud_filtered->points.size() << " points after filtering." << endl;
+    cloud = cloud_filtered;
 
     // 计算法向量
     pcl::NormalEstimation<PoinT, pcl::Normal> n;//法线估计对象
@@ -69,15 +88,15 @@ int main(int argc, char** argv)
     mls.setInputCloud(cloud_with_normals);//设置参数
     mls.setPolynomialFit(true);
     mls.setSearchMethod(tree2);
-    mls.setSearchRadius(4);//影响计算时间，值越大，耗时越久
+    mls.setSearchRadius(3);//影响计算时间，值越大，耗时越久
     pcl::PointCloud<PoinTNormal>::Ptr cloud_with_normals_msl(new pcl::PointCloud<PoinTNormal>);
     mls.process(*cloud_with_normals_msl);
     cloud_with_normals = cloud_with_normals_msl;
     std::cerr << "法线最小二乘法  完成" << std::endl;
     end = clock();//结束时间
     cout<<"法线最小二乘法  完成 time = "<<double(end-start)/CLOCKS_PER_SEC<<"s"<<endl;  //输出时间（单位：ｓ）
+    
     // 开始表面重建 ********************************************************************
-
     //创建Poisson对象，并设置参数
     // pcl::Poisson<pcl::PointNormal> pn;
     // pn.setConfidence(false); //是否使用法向量的大小作为置信信息。如果false，所有法向量均归一化。

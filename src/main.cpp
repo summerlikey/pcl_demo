@@ -45,8 +45,29 @@ int main(int argc, char** argv)
 	//std::string path = "/home/ganggang/Pictures/images0107/O/o_12/fadongji.ply";
 	//pointMesh.readPointFile(path);//ch
 	pointMesh.cvMatToPointCloud(object_height);//cv mat to pcl data
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>(new pcl::PointCloud<pcl::PointXYZ>);
+    cloud = pointMesh.getCloud();
 
-	viewerFunction(pointMesh.getCloud(),"3D cloud view");
+    /*直通滤波器对点云进行处理。*/
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_after_PassThrough(new pcl::PointCloud<pcl::PointXYZ>);//
+    pcl::PassThrough<pcl::PointXYZ> passthrough;
+    passthrough.setInputCloud(cloud);//输入点云
+    passthrough.setFilterFieldName("z");//对z轴进行操作
+    passthrough.setFilterLimits(-10.0, 100.0);//设置直通滤波器操作范围
+    //passthrough.setFilterLimitsNegative(true);//true表示保留范围内，false表示保留范围外
+    passthrough.filter(*cloud_after_PassThrough);//执行滤波，过滤结果保存在 cloud_after_PassThrough
+    
+    std::cout << "直通滤波后点云数据点数：" << cloud_after_PassThrough->points.size() << std::endl;
+    //点云离群滤波
+    // Create the filtering object
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered = boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+	sor.setInputCloud(cloud_after_PassThrough);
+	sor.setMeanK(50);
+	sor.setStddevMulThresh(1.0);
+	sor.filter(*cloud_filtered);
+	cout << "there are " << cloud_filtered->points.size() << " points after filtering." << endl;
+	viewerFunction(cloud,cloud_filtered,"3D cloud filter view");
 
 	return 0;
 }

@@ -93,9 +93,6 @@ void PointMesh::cvMatToPointCloud(cv::Mat &mat){
             pointXYZ.x = u;
             pointXYZ.y = v;
             pointXYZ.z = mat.at<float>(u, v);
-
-            if(pointXYZ.z <= -10)
-                continue;
             cloud->points.push_back(pointXYZ);
         }
     }

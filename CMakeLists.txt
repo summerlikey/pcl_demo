@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(captureImage)
+project(Pcl_Demo)
 
 set(CMAKE_BUILD_TYPE Debug)
 #c++编译标准
